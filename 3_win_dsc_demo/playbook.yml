@@ -1,0 +1,95 @@
+---
+# First Play installs dsc resource on all future domain controllers
+- hosts: dcs
+  gather_facts: no
+  tasks:
+  - name: use win_psmodule to install dsc resources on target machines
+    win_psmodule:
+      name: xActiveDirectory
+      state: present
+    ignore_errors: True
+  - name: copy dsc resources to target machines
+    win_copy:
+      src: files/xActiveDirectory
+      dest: C:\Program Files\WindowsPowerShell\Modules
+      force: no
+  - name: create temp folder
+    win_file:
+      path: C:\Temp
+      state: directory
+
+  - name: copy LCM disablement script
+    win_copy:
+      src: files/disable_lcm_allow_reboot.ps1
+      dest: c:\Temp\
+  - name: disable LCM before using win_dsc module
+    win_shell: c:\temp\disable_lcm_allow_reboot.ps1
+
+- name: Second Play creates domain on first domain controller then reboots
+  hosts: dcs[0]
+  gather_facts: no
+  vars_files:
+  - vars.yml
+  tasks:
+  - name: create domain on first DC
+    win_dsc:
+      resource_name: xADDomain
+      DomainName: summit2019.local
+      DomainAdministratorCredential_username: "{{domain_admin_username}}"
+      DomainAdministratorCredential_password: "{{domain_admin_password}}"
+      SafemodeAdministratorPassword_username: NotUsedButNeededForCredentialObjectPair
+      SafemodeAdministratorPassword_password: IHopeINeverNeedThis!!
+  - name: wait for DC01 to come back online
+    wait_for_connection:
+        delay: 0 # not required. Number of seconds to wait before starting to poll.
+        sleep: 5 # not required. Number of seconds to sleep between checks.
+        connect_timeout: 500 # not required. Maximum number of seconds to wait for a connection to happen before closing and retrying.
+        timeout: 600 # not required. Maximum number of seconds to wait for.
+
+# Third play joins member server to the new domain
+- hosts: members
+  gather_facts: yes
+  vars:
+  - domain_name: summit2019.local
+  vars_files:
+  - vars.yml
+  tasks:
+  - name: install xComputerManagement DSC Resource from PowerShell Gallery
+    win_psmodule:
+      name: xComputerManagement
+      state: present
+    ignore_errors: True
+  - name: copy dsc resources to target machines
+    win_copy:
+      src: files/{{item}}
+      dest: C:\Program Files\WindowsPowerShell\Modules
+      force: no
+    loop:
+    - xActiveDirectory
+    - xComputerManagement
+  - name: copy LCM disablement script
+    win_copy:
+      src: files/disable_lcm_no_reboot.ps1
+      dest: c:\Temp\
+  - name: disable LCM before using win_dsc module and don't allow dsc to do a reboot
+    win_shell: c:\temp\disable_lcm_no_reboot.ps1
+  - name: wait for domain via win_dsc module
+    win_dsc:
+      resource_name: xWaitForADDomain
+      DomainName: "{{domain_name}}"
+      RetryIntervalSec: 5
+      RetryCount: 999
+      RebootRetryCount: 100
+
+  - name: join machine to domain
+    win_dsc:
+      resource_name: xComputer
+      name: "{{ansible_hostname}}"
+      domainname: "{{domain_name}}"
+      Credential_username: "{{domain_admin_username}}"
+      Credential_password: "{{domain_admin_password}}"
+    notify: reboot
+  handlers:
+  - name: reboot
+    win_reboot:
+

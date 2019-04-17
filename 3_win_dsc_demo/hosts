@@ -1,0 +1,6 @@
+[dcs]
+dc01 ansible_host=192.168.56.2
+dc02 ansible_host=192.168.56.3
+[members]
+server3 ansible_host=192.168.56.4
+dc02 ansible_host=192.168.56.3

@@ -1,0 +1,11 @@
+# inventory file lists hosts that can be acted upon
+# hosts sorted into groups to apply variables and tasks in bulk
+# hosts can be in multiple groups
+# there's a whole child group thing that we won't get into but you can read about here:
+# https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html
+
+[dcs]
+dc01 ansible_host=192.168.56.2
+dc02 ansible_host=192.168.56.3
+[members]
+server3 ansible_host=192.168.56.4

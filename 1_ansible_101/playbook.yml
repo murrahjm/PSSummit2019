@@ -1,0 +1,33 @@
+---
+- hosts: all
+  gather_facts: yes
+  tasks:
+  - name: set administrator password
+    win_user:
+      Name: Administrator
+      Password: SuperSecretPassword1234
+
+  - name: stop windows update service and set to disabled
+    win_service:
+      name: wuauserv
+      start_mode: disabled
+      state: stopped
+      # force_dependent_services: true
+
+  - name: install windows feature AD-DS on DCs
+    win_feature:
+      name: AD-Domain-Services
+      state: present
+      include_management_tools: yes
+      include_sub_features: yes
+    when: ansible_facts.memtotal_mb == 4096
+    register: adds_install
+
+  - name: reboot if AD DS was installed
+    win_reboot:
+    when: adds_install.changed
+
+  - name: set DNS client settings to first DC ip address
+    win_dns_client:
+      adapter_names: '*'
+      ipv4_addresses: "192.168.56.2"

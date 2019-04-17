@@ -1,0 +1,44 @@
+---
+- hosts: all
+  gather_facts: yes
+  tasks:
+  - win_ping:
+
+  - debug: var=ansible_facts
+  - pause: minutes=5
+
+  - name: run a simple command on a machine
+    win_shell: get-childitem c:\
+
+  - name: it can be multi-line as well for readability
+    win_shell: |
+      if (!(test-path c:\source)){
+        new-item -itemtype directory -path c:\ -name source
+        new-item -itemtype file -path c:\source -name {{ansible_hostname}}
+      }
+    register: new_item_result
+    changed_when: new_item_result.stdout != ''
+
+  - name: This output sucks
+    debug:
+      var: new_item_result
+  
+  - name: powershell script with json output
+    win_shell: get-childitem c:\ | convertto-json
+    register: ps_json_output
+
+  - debug: msg="{{ps_json_output.stdout | from_json}}"
+
+  - set_fact:
+      just_names: "{{just_names | default([])}} + {{[item.FullName]}}"
+    loop: "{{ps_json_output.stdout | from_json}}"
+  
+  - debug: var=just_names
+  
+- hosts: localhost
+  connection: local
+  vars:
+    url: http://testapi.domain.com/api/v1/
+  tasks:
+  # - name: do a GET to a REST API
+    # use the uri snippet to fill this one out

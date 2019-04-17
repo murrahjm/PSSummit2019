@@ -1,0 +1,49 @@
+---
+- hosts: dcs[0]
+  gather_facts: no
+  tasks:
+  - name: Create a bunch of users
+    win_domain_user:
+      name: "Admin{{loop_count}}"
+      password: "{{ansible_password}}"
+    loop: "{{range(1, 3)|list}}"
+    loop_control:
+      loop_var: loop_count
+
+  # First option: Get all users from AD, then use jinja and ansible to do filtering
+  - name: Get list of AD usernames
+    win_shell: Get-aduser -filter {SamAccountName -like "Admin*"} | convertto-json
+    register: ad_users_json
+    changed_when: false
+
+  - set_fact:
+      user_list: "{{ad_users_json.stdout | from_json}}"
+
+  - set_fact:
+      filtered_user_list: "{{filtered_user_list | default([])}} + {{[item]}}"
+    loop: "{{user_list}}"
+    when: (item.SamAccountName|lower).find(lookup('vars','ansible_user').split("@")[0]|lower) != -1
+
+  - debug: var=filtered_user_list
+  - pause: minutes=5
+  # second option: get aduser and do filtering in powershell
+
+  - name: get filtered list of AD users
+    win_shell: get-aduser -filter {SamAccountName -like "{{ansible_user.split("@")[0]}}"} | convertto-json
+    register: ad_users_json
+    changed_when: false
+
+  - debug: var=ad_users_json.stdout|from_json
+  - pause: minutes=5
+  # third option: write a custom ansible module to return data exactly how we want it
+  - name: get user with custom module
+    win_aduser_facts:
+      filter_property: SamAccountName
+      filter_value: "{{ansible_user.split('@')[0]}}"
+      return_properties:
+        - SamAccountName
+        - memberof
+        - whenCreated
+      domain_name: summit2019.local
+    register: module_result
+  - debug: var=module_result

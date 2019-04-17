@@ -10,7 +10,7 @@ Presumably this would work on a non-windows machine with only items 1 and 2 bein
 
 ## Launcher
 
-The presentation flow is itself controlled by an ansible playbook.  This is located in the [launcher](./launcher) folder.  This playbook alternates between opening powerpoint and vscode for the various slides and demos.follows:
+The presentation flow is itself controlled by an ansible playbook.  This is located in the [launcher](./launcher) folder.  This playbook alternates between opening powerpoint and vscode for the various slides and demos.
 
 ## Slides
 

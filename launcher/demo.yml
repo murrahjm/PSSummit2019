@@ -4,33 +4,33 @@
   gather_facts: no
   tasks:
   - name: Let's start this thing with some awesome powerpoint!
-    command: /mnt/c/Program\ Files\ \(x86\)/Microsoft\ Office/root/Office16/POWERPNT.EXE /S 'c:\Repos\AnsibleForWindows\powerpoints\slides1.pptx'
+    command: /mnt/c/Program\ Files\ \(x86\)/Microsoft\ Office/root/Office16/POWERPNT.EXE /S 'c:\Repos\PSSummit2019\powerpoints\slides1.pptx'
 
   - name: open demo 1 for some sweet codey goodness!
     command: code -n -w 1_ansible_101
     args:
-      chdir: /mnt/c/Repos/AnsibleforWindows
+      chdir: /mnt/c/Repos/PSSummit2019
 
   - name: demo 2 go!
     command: code -n -w 2_vault_and_modules
     args:
-      chdir: /mnt/c/Repos/AnsibleforWindows
+      chdir: /mnt/c/Repos/PSSummit2019
 
   - name: it's Power(point) time!
-    command: /mnt/c/Program\ Files\ \(x86\)/Microsoft\ Office/root/Office16/POWERPNT.EXE /S 'c:\Repos\AnsibleForWindows\powerpoints\slides3.pptx'
+    command: /mnt/c/Program\ Files\ \(x86\)/Microsoft\ Office/root/Office16/POWERPNT.EXE /S 'c:\Repos\PSSummit2019\powerpoints\slides3.pptx'
 
   - name: we're getting to the good stuff now
     command: code -n -w 3_win_dsc_demo
     args:
-      chdir: /mnt/c/Repos/AnsibleforWindows
+      chdir: /mnt/c/Repos/PSSummit2019
 
   - name: this just keeps going
-    command: /mnt/c/Program\ Files\ \(x86\)/Microsoft\ Office/root/Office16/POWERPNT.EXE /S 'c:\Repos\AnsibleForWindows\powerpoints\slides4.pptx'
+    command: /mnt/c/Program\ Files\ \(x86\)/Microsoft\ Office/root/Office16/POWERPNT.EXE /S 'c:\Repos\PSSummit2019\powerpoints\slides4.pptx'
 
   - name: let's get weird
     command: code -n -w 4_custom_module_demo
     args:
-      chdir: /mnt/c/Repos/AnsibleforWindows
+      chdir: /mnt/c/Repos/PSSummit2019
 
   - name: finally done!
-    command: /mnt/c/Program\ Files\ \(x86\)/Microsoft\ Office/root/Office16/POWERPNT.EXE /S 'c:\Repos\AnsibleForWindows\powerpoints\slides5.pptx'
+    command: /mnt/c/Program\ Files\ \(x86\)/Microsoft\ Office/root/Office16/POWERPNT.EXE /S 'c:\Repos\PSSummit2019\powerpoints\slides5.pptx'

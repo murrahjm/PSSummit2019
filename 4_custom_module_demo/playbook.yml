@@ -39,7 +39,7 @@
   - name: get user with custom module
     win_aduser_facts:
       filter_property: SamAccountName
-      filter_value: "{{ansible_user.split('@')[0]}}"
+      filter_value: Administrator
       return_properties:
         - SamAccountName
         - memberof

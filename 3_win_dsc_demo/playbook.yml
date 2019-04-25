@@ -13,11 +13,11 @@
       src: files/xActiveDirectory
       dest: C:\Program Files\WindowsPowerShell\Modules
       force: no
+
   - name: create temp folder
     win_file:
       path: C:\Temp
       state: directory
-
   - name: copy LCM disablement script
     win_copy:
       src: files/disable_lcm_allow_reboot.ps1

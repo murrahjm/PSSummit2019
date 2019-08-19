@@ -1,6 +1,6 @@
 # Ansible for the Windows Admin
 
-This repository contains all presentation and demo material for the 2019 PowerShell Summit presentation *Ansible for the Windows Admin*.  The repository should contain everything needed to duplicate the presentation, with the following pre-requisites:
+This repository contains all presentation and demo material for the 2019 PowerShell Summit presentation [*Ansible for the Windows Admin*](https://youtu.be/ZI20Y10OKd0).  The repository should contain everything needed to duplicate the presentation, with the following pre-requisites:
 
 1. VirtualBox
 2. VSCode

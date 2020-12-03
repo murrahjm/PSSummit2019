@@ -1,6 +1,6 @@
 Vagrant.configure("2") do |config|
   config.vm.define "Server1" do |server1|
-    server1.vm.box = "gusztavvargadr/w16sc"
+    server1.vm.box = "gusztavvargadr/windows-server"
     server1.vm.network "private_network", ip: "192.168.56.2"
     server1.vm.hostname = "DC01"
     server1.vm.provider "virtualbox" do |hv|
@@ -10,7 +10,7 @@ Vagrant.configure("2") do |config|
   end
 #
   config.vm.define "Server2" do |server2|
-    server2.vm.box = "gusztavvargadr/w16sc"
+    server2.vm.box = "gusztavvargadr/windows-server"
     server2.vm.network "private_network", ip: "192.168.56.3"
     server2.vm.hostname = "DC02"
     server2.vm.provider "virtualbox" do |hv|
@@ -20,7 +20,7 @@ Vagrant.configure("2") do |config|
   end
 #
 config.vm.define "Server3" do |server3|
-  server3.vm.box = "gusztavvargadr/w16sc"
+  server3.vm.box = "gusztavvargadr/windows-server"
   server3.vm.network "private_network", ip: "192.168.56.4"
   server3.vm.hostname = "Server3"
   server3.vm.provider "virtualbox" do |hv|
